@@ -2,7 +2,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:whatsapp_clone/features/auth/screen/login-screen.dart';
+import 'package:whatsapp_clone/features/auth/screen/otp-screen.dart';
 import 'package:whatsapp_clone/resources/common/colors.dart';
+import 'package:whatsapp_clone/resources/common/errro.dart';
 import 'firebase_options.dart';
 
 import './features/landing/landing_screen.dart';
@@ -14,6 +17,7 @@ void main() async {
   );
   runApp(
     ProviderScope(
+      //A widget that stores the state of providers... exposed by riverpod
       child: MyApp(),
     ),
   );
@@ -36,11 +40,33 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  final _router = GoRouter(routes: [
-    GoRoute(
-        path: "/",
-        builder: (context, state) {
-          return const LandingScreen();
-        })
-  ]);
+  final _router = GoRouter(
+    routes: [
+      GoRoute(
+          path: '/',
+          builder: (context, state) {
+            return const LandingScreen();
+          }),
+      // GoRoute(
+      //     path: LandingScreen.routeName,
+      //     builder: (context, state) {
+      //       return const LandingScreen();
+      //     }),
+      GoRoute(
+          path: LoginScreen.routeName,
+          builder: (context, state) {
+            return const LoginScreen();
+          }),
+      GoRoute(
+          path: OTPScreen.routeName,
+          builder: (context, state) {
+            return OTPScreen(
+              verificationId: state.extra! as String,
+            );
+          }),
+    ],
+    errorBuilder: (context, state) {
+      return const ErrorScrren(error: "404 Eror");
+    },
+  );
 }

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:whatsapp_clone/features/auth/screen/login-screen.dart';
 
 import '../../resources/common/colors.dart';
 
 class LandingScreen extends StatelessWidget {
+  static const routeName = "landing-screen";
   const LandingScreen({Key? key}) : super(key: key);
 
   @override
@@ -51,7 +54,9 @@ class LandingScreen extends StatelessWidget {
                     'AGREE AND CONTINUE',
                     style: TextStyle(color: blackColor),
                   ),
-                  onPressed: () {} //navigateToLoginScreen(context),
+                  onPressed: () {
+                    context.go(LoginScreen.routeName);
+                  } //navigateToLoginScreen(context),
                   ),
             ),
           ],
