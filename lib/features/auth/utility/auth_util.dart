@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:whatsapp_clone/features/auth/screen/otp-screen.dart';
+import 'package:whatsapp_clone/features/auth/screen/user-information_screen.dart';
 import '../../../resources/common/utils.dart';
 
 final authUtilProvider = Provider((ref) {
@@ -40,6 +41,26 @@ class AuthUtil {
       );
     } on FirebaseAuthException catch (e) {
       //handling firebase auth exception
+      showSnackBar(context: context, content: e.message!);
+    }
+  }
+
+  //verify otp send to user
+  void verifyOTP(
+      {required BuildContext context,
+      required String verificationId,
+      required String otpFromUser}) async {
+    try {
+      //create a new Phone credential with an verification ID and SMS code.
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otpFromUser,
+      );
+
+      //Asynchronously signs in to Firebase with the given 3rd-party credentials
+      await auth.signInWithCredential(credential);
+      context.go(UserInFoScreen.routeName);
+    } on FirebaseAuthException catch (e) {
       showSnackBar(context: context, content: e.message!);
     }
   }

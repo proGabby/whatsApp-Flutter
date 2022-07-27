@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
   final _router = GoRouter(
     routes: [
       GoRoute(
-          path: '/',
+          path: "/",
           builder: (context, state) {
             return const LandingScreen();
           }),

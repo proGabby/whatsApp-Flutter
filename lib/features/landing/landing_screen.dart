@@ -56,8 +56,7 @@ class LandingScreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     context.go(LoginScreen.routeName);
-                  } //navigateToLoginScreen(context),
-                  ),
+                  }),
             ),
           ],
         ),
