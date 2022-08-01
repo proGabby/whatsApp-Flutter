@@ -2,8 +2,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:whatsapp_clone/features/auth/controller/auth-controller.dart';
 import 'package:whatsapp_clone/features/auth/screen/login-screen.dart';
 import 'package:whatsapp_clone/features/auth/screen/otp-screen.dart';
+import 'package:whatsapp_clone/features/mainscreen.dart';
+import 'package:whatsapp_clone/models/user-model.dart';
 import 'package:whatsapp_clone/resources/common/colors.dart';
 import 'package:whatsapp_clone/resources/common/errro.dart';
 import 'firebase_options.dart';
@@ -34,6 +38,18 @@ class MyApp extends StatelessWidget {
       routerDelegate: _router.routerDelegate,
       routeInformationProvider: _router.routeInformationProvider,
       debugShowCheckedModeBanner: false,
+      //using builder to set the initial screen
+      // builder: (context, child) {
+      //   return ref.watch(userDataProvider).when(
+      //       data: ((user) {
+      //         if (user == null) {
+      //           return const LandingScreen();
+      //         }
+      //         return const MobileScren();
+      //       }),
+      //       error: ((err, stackTrace) => ErrorScrren(error: err.toString())),
+      //       loading: () => const CircularProgressIndicator());
+      // },
       theme: ThemeData(
           scaffoldBackgroundColor: backgroundColor,
           appBarTheme: const AppBarTheme(color: appBarColor)),
@@ -45,7 +61,7 @@ class MyApp extends StatelessWidget {
       GoRoute(
           path: "/",
           builder: (context, state) {
-            return const LandingScreen();
+            return const HomeScreen();
           }),
       // GoRoute(
       //     path: LandingScreen.routeName,
@@ -69,4 +85,21 @@ class MyApp extends StatelessWidget {
       return const ErrorScrren(error: "404 Eror");
     },
   );
+}
+
+class HomeScreen extends ConsumerWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(userDataProvider).when(
+        data: ((user) {
+          if (user == null) {
+            return const LandingScreen();
+          }
+          return const MobileScren();
+        }),
+        error: ((err, stackTrace) => ErrorScrren(error: err.toString())),
+        loading: () => const CircularProgressIndicator());
+  }
 }
