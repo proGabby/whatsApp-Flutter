@@ -110,11 +110,12 @@ class AuthUtil {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(
-          builder: (context) => const MobileScren(),
+          builder: (context) => const MobileScreen(),
         ),
         (route) => false,
       );
     } catch (e) {
+      debugPrint(e.toString());
       showSnackBar(context: context, content: e.toString());
     }
   }
@@ -129,5 +130,14 @@ class AuthUtil {
       user = UserModel.fromMap(userData.data()!);
     }
     return user;
+  }
+
+//get user data from firestore as a stream snapshot
+  Stream<UserModel> userData(String userId) {
+    return firestore.collection('users').doc(userId).snapshots().map(
+          (event) => UserModel.fromMap(
+            event.data()!,
+          ),
+        );
   }
 }

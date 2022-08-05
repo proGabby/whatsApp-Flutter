@@ -6,10 +6,13 @@ import 'package:go_router/go_router.dart';
 import 'package:whatsapp_clone/features/auth/controller/auth-controller.dart';
 import 'package:whatsapp_clone/features/auth/screen/login-screen.dart';
 import 'package:whatsapp_clone/features/auth/screen/otp-screen.dart';
+import 'package:whatsapp_clone/features/auth/screen/user-information_screen.dart';
+import 'package:whatsapp_clone/features/chats/screen/chat-screen_mobile.dart';
 import 'package:whatsapp_clone/features/mainscreen.dart';
-import 'package:whatsapp_clone/models/user-model.dart';
+import 'package:whatsapp_clone/resources/common/circularLoader.dart';
 import 'package:whatsapp_clone/resources/common/colors.dart';
 import 'package:whatsapp_clone/resources/common/errro.dart';
+import 'features/select_contact/screen/selectcontact-screen.dart';
 import 'firebase_options.dart';
 
 import './features/landing/landing_screen.dart';
@@ -38,18 +41,6 @@ class MyApp extends StatelessWidget {
       routerDelegate: _router.routerDelegate,
       routeInformationProvider: _router.routeInformationProvider,
       debugShowCheckedModeBanner: false,
-      //using builder to set the initial screen
-      // builder: (context, child) {
-      //   return ref.watch(userDataProvider).when(
-      //       data: ((user) {
-      //         if (user == null) {
-      //           return const LandingScreen();
-      //         }
-      //         return const MobileScren();
-      //       }),
-      //       error: ((err, stackTrace) => ErrorScrren(error: err.toString())),
-      //       loading: () => const CircularProgressIndicator());
-      // },
       theme: ThemeData(
           scaffoldBackgroundColor: backgroundColor,
           appBarTheme: const AppBarTheme(color: appBarColor)),
@@ -59,15 +50,15 @@ class MyApp extends StatelessWidget {
   final _router = GoRouter(
     routes: [
       GoRoute(
-          path: "/",
+          path: '/',
           builder: (context, state) {
             return const HomeScreen();
           }),
-      // GoRoute(
-      //     path: LandingScreen.routeName,
-      //     builder: (context, state) {
-      //       return const LandingScreen();
-      //     }),
+      GoRoute(
+          path: SelectContactsScreen.routeName,
+          builder: (context, state) {
+            return const SelectContactsScreen();
+          }),
       GoRoute(
           path: LoginScreen.routeName,
           builder: (context, state) {
@@ -80,9 +71,21 @@ class MyApp extends StatelessWidget {
               verificationId: state.extra! as String,
             );
           }),
+      GoRoute(
+          path: UserInfoScreen.routeName,
+          builder: (context, state) {
+            return const UserInfoScreen();
+          }),
+      GoRoute(
+          path: MobileChatScreen.routeName,
+          builder: (context, state) {
+            final stateMap = state.extra! as Map<String, dynamic>;
+            return MobileChatScreen(
+                name: stateMap['name'], userId: stateMap['uid']);
+          }),
     ],
     errorBuilder: (context, state) {
-      return const ErrorScrren(error: "404 Eror");
+      return const ErrorScrren(error: "404 Error");
     },
   );
 }
@@ -97,9 +100,9 @@ class HomeScreen extends ConsumerWidget {
           if (user == null) {
             return const LandingScreen();
           }
-          return const MobileScren();
+          return const MobileScreen();
         }),
         error: ((err, stackTrace) => ErrorScrren(error: err.toString())),
-        loading: () => const CircularProgressIndicator());
+        loading: () => const CircularLoader());
   }
 }

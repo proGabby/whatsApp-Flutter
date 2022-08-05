@@ -5,7 +5,7 @@ import 'package:whatsapp_clone/features/auth/screen/login-screen.dart';
 import '../../resources/common/colors.dart';
 
 class LandingScreen extends StatelessWidget {
-  static const routeName = "landing-screen";
+  static const routeName = "/landing-screen";
   const LandingScreen({Key? key}) : super(key: key);
 
   @override

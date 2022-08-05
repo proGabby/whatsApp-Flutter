@@ -86,7 +86,7 @@ class _UserInfoScreenState extends ConsumerState<UserInfoScreen> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () => storeUserData,
                     icon: const Icon(
                       Icons.done,
                     ),
