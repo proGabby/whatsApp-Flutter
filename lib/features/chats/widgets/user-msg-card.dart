@@ -63,6 +63,7 @@ class MyMessageCard extends StatelessWidget {
                         ),
                   child: Column(
                     children: [
+                      //using cascade to provide multiple widget
                       if (isReplying) ...[
                         Text(
                           username,

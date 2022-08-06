@@ -6,9 +6,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:whatsapp_clone/features/chats/widgets/msg-reply-preview.dart';
 
 import '../../../resources/common/colors.dart';
 import '../../../resources/common/enums/msg-enum.dart';
+import '../../../resources/common/providers/msg-reply-provider.dart';
 import '../../../resources/common/utils.dart';
 import '../controller/chat-controller.dart';
 
@@ -177,11 +179,15 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
 
   @override
   Widget build(BuildContext context) {
-    // final messageReply = ref.watch(messageReplyProvider);
-    // final isShowMessageReply = messageReply != null;
+    //listen to messageReplyProvider
+    final messageReply = ref.watch(messageReplyProvider);
+    //true when messageReply is not null
+    final isShowMessageReply = messageReply != null;
+
     return Column(
       children: [
-        // isShowMessageReply ? const MessageReplyPreview() : const SizedBox(),
+        //show message reply base on isShowMessageReply value
+        isShowMessageReply ? const MessageReplyPreview() : const SizedBox(),
         Row(
           children: [
             Expanded(

@@ -57,7 +57,8 @@ class ChatController {
             isGroupChat: isGroupChat,
           ),
         );
-    //ref.read(messageReplyProvider.state).update((state) => null);
+    //to close the reply dialog after sending by updating the state
+    ref.read(messageReplyProvider.state).update((state) => null);
   }
 
   void sendFileMessage(
@@ -80,7 +81,8 @@ class ChatController {
             isGroupChat: isGroupChat,
           ),
         );
-    // ref.read(messageReplyProvider.state).update((state) => null);
+    //to close the reply dialog after sending by updating the state
+    ref.read(messageReplyProvider.state).update((state) => null);
   }
 
   void sendGIFMessage(

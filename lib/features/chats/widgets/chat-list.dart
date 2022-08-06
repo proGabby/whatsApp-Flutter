@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:whatsapp_clone/resources/common/circularLoader.dart';
 
 import '../../../models/msg-model.dart';
+import '../../../resources/common/enums/msg-enum.dart';
+import '../../../resources/common/providers/msg-reply-provider.dart';
 import '../controller/chat-controller.dart';
 import 'sender-msg-card.dart';
 import 'user-msg-card.dart';
@@ -32,19 +34,20 @@ class _ChatListState extends ConsumerState<ChatList> {
     messageController.dispose();
   }
 
-  // void onMessageSwipe(
-  //   String message,
-  //   bool isMe,
-  //   MessageEnum messageEnum,
-  // ) {
-  //   ref.read(messageReplyProvider.state).update(
-  //         (state) => MessageReply(
-  //           message,
-  //           isMe,
-  //           messageEnum,
-  //         ),
-  //       );
-  // }
+  //activate message swiping
+  void onMessageSwipe(
+    String message,
+    bool isMe,
+    MessageEnum messageEnum,
+  ) {
+    ref.read(messageReplyProvider.state).update(
+          (state) => MessageReply(
+            message,
+            isMe,
+            messageEnum,
+          ),
+        );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,12 +96,11 @@ class _ChatListState extends ConsumerState<ChatList> {
                   repliedText: messageData.repliedMessage,
                   username: messageData.repliedTo,
                   repliedMessageType: messageData.repliedMessageType,
-                  onLeftSwipe: () {},
-                  // onMessageSwipe(
-                  //   messageData.text,
-                  //   true,
-                  //   messageData.type,
-                  // ),
+                  onLeftSwipe: () => onMessageSwipe(
+                    messageData.text,
+                    true,
+                    messageData.type,
+                  ),
                   isSeen: messageData.isSeen,
                 );
               }
@@ -108,12 +110,11 @@ class _ChatListState extends ConsumerState<ChatList> {
                 type: messageData.type,
                 username: messageData.repliedTo,
                 repliedMessageType: messageData.repliedMessageType,
-                onRightSwipe: () {},
-                // onMessageSwipe(
-                //   messageData.text,
-                //   false,
-                //   messageData.type,
-                // ),
+                onRightSwipe: () => onMessageSwipe(
+                  messageData.text,
+                  false,
+                  messageData.type,
+                ),
                 repliedText: messageData.repliedMessage,
               );
             },
