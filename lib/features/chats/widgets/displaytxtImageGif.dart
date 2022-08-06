@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -16,7 +17,7 @@ class DisplayTextImageGIF extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isPlaying = false;
-    // final AudioPlayer audioPlayer = AudioPlayer();
+    final AudioPlayer audioPlayer = AudioPlayer();
 
     return type == MessageEnum.text
         ? Text(
@@ -25,56 +26,43 @@ class DisplayTextImageGIF extends StatelessWidget {
               fontSize: 16,
             ),
           )
-        :
-        //TO DELETE
-        type == MessageEnum.video
-            ? VideoPlayerItem(
-                videoUrl: message,
-              )
-            : type == MessageEnum.gif
-                ? CachedNetworkImage(
-                    imageUrl: message,
+        : type == MessageEnum.audio
+            //using stateFulbuilder to build the playing and pause button
+            ? StatefulBuilder(builder: (context, setState) {
+                return IconButton(
+                  constraints: const BoxConstraints(
+                    minWidth: 100,
+                  ),
+                  onPressed: () async {
+                    if (isPlaying) {
+                      //pause the audioPlayer
+                      await audioPlayer.pause();
+                      setState(() {
+                        isPlaying = false;
+                      });
+                    } else {
+                      //start the audioPlayer
+                      await audioPlayer.play(UrlSource(message));
+                      setState(() {
+                        isPlaying = true;
+                      });
+                    }
+                  },
+                  icon: Icon(
+                    isPlaying ? Icons.pause_circle : Icons.play_circle,
+                  ),
+                );
+              })
+            : type == MessageEnum.video
+                ? VideoPlayerItem(
+                    videoUrl: message,
                   )
-                : CachedNetworkImage(
-                    imageUrl: message,
-                  );
-
-    // type == MessageEnum.audio
-    //     ?
-    // StatefulBuilder(builder: (context, setState) {
-    //     return IconButton(
-    //       constraints: const BoxConstraints(
-    //         minWidth: 100,
-    //       ),
-    //       onPressed: () async {
-    // if (isPlaying) {
-    //   await audioPlayer.pause();
-    //   setState(() {
-    //     isPlaying = false;
-    //   });
-    // } else {
-    //   await audioPlayer.play(UrlSource(message));
-    //   setState(() {
-    //     isPlaying = true;
-    //   });
-    // }
-    //     },
-    //     icon: Icon(
-    //       // isPlaying ? Icons.pause_circle :
-    //       Icons.play_circle,
-    //     ),
-    //   );
-    // });
-    // : type == MessageEnum.video
-    //     ? VideoPlayerItem(
-    //         videoUrl: message,
-    //       )
-    //     : type == MessageEnum.gif
-    //         ? CachedNetworkImage(
-    //             imageUrl: message,
-    //           )
-    //         : CachedNetworkImage(
-    //             imageUrl: message,
-    //           );
+                : type == MessageEnum.gif
+                    ? CachedNetworkImage(
+                        imageUrl: message,
+                      )
+                    : CachedNetworkImage(
+                        imageUrl: message,
+                      );
   }
 }

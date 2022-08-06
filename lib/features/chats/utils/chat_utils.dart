@@ -39,7 +39,7 @@ class ChatUtility {
     try {
       var timeSent = DateTime.now();
       var messageId = const Uuid().v1();
-      //save image to firebase storage and get the image url
+      //save image to firebase storage and get the image url or the file
       String imageUrl =
           await ref.read(commonFirebaseStorageProvider).storeFileToFirebase(
                 'chat/${messageEnum.type}/${senderUserData.uid}/$recieverUserId/$messageId',

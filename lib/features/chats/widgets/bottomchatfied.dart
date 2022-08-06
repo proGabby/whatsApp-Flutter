@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../resources/common/colors.dart';
 import '../../../resources/common/enums/msg-enum.dart';
@@ -25,29 +28,40 @@ class BottomChatField extends ConsumerStatefulWidget {
 class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   bool isShowSendButton = false;
   final TextEditingController _messageController = TextEditingController();
-  // FlutterSoundRecorder? _soundRecorder;
-  // bool isRecorderInit = false;
+
+  //created as nullable due to late sync error
+  FlutterSoundRecorder? _soundRecorder;
+  //val to track recorder initiation state
+  bool isRecorderInit = false;
   bool isShowEmojiContainer = false;
-  // bool isRecording = false;
+  //track the state of the recording button
+  bool isRecording = false;
   FocusNode focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    // _soundRecorder = FlutterSoundRecorder();
-    // openAudio();
+    //init the soundRecorder
+    _soundRecorder = FlutterSoundRecorder();
+    //opening the audio portal
+    openAudio();
   }
 
-  // void openAudio() async {
-  //   final status = await Permission.microphone.request();
-  //   if (status != PermissionStatus.granted) {
-  //     throw RecordingPermissionException('Mic permission not allowed!');
-  //   }
-  //   await _soundRecorder!.openRecorder();
-  //   isRecorderInit = true;
-  // }
+  //opening the audio facility
+  void openAudio() async {
+    //request for microphone permission
+    final status = await Permission.microphone.request();
+    //check for microphone permission
+    if (status != PermissionStatus.granted) {
+      throw RecordingPermissionException('Mic permission not allowed!');
+    }
+    //open recorder
+    await _soundRecorder!.openRecorder();
 
-  void sendTextMessage() async {
+    isRecorderInit = true;
+  }
+
+  void sendTextMessageOrAudioRecord() async {
     if (isShowSendButton) {
       ref.read(chatControllerProvider).sendTextMessage(
             context,
@@ -58,28 +72,34 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
       setState(() {
         _messageController.text = '';
       });
-    }
-    // else {
-    //   var tempDir = await getTemporaryDirectory();
-    //   var path = '${tempDir.path}/flutter_sound.aac';
-    //   if (!isRecorderInit) {
-    //     return;
-    //   }
-    //   if (isRecording) {
-    //     await _soundRecorder!.stopRecorder();
-    //     sendFileMessage(File(path), MessageEnum.audio);
-    //   } else {
-    //     await _soundRecorder!.startRecorder(
-    //       toFile: path,
-    //     );
-    //   }
+    } else {
+      //temp directory where audio is solve
+      var tempDir = await getTemporaryDirectory();
 
-    //   setState(() {
-    //     isRecording = !isRecording;
-    //   });
-    // }
+      //get the path to the recorded file
+      var path = '${tempDir.path}/flutter_sound.aac';
+
+      if (!isRecorderInit) {
+        return;
+      }
+      if (isRecording) {
+        await _soundRecorder!.stopRecorder();
+        //save and send file to firebase and to the chat
+        sendFileMessage(File(path), MessageEnum.audio);
+      } else {
+        await _soundRecorder!.startRecorder(
+          //attach the path to the file
+          toFile: path,
+        );
+      }
+
+      setState(() {
+        isRecording = !isRecording;
+      });
+    }
   }
 
+  //send file
   void sendFileMessage(
     File file,
     MessageEnum messageEnum,
@@ -151,8 +171,8 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     super.dispose();
     focusNode.dispose();
     _messageController.dispose();
-    // _soundRecorder!.closeRecorder();
-    // isRecorderInit = false;
+    _soundRecorder!.closeRecorder();
+    isRecorderInit = false;
   }
 
   @override
@@ -255,12 +275,12 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                   child: Icon(
                     isShowSendButton
                         ? Icons.send
-                        // : isRecording
-                        //     ? Icons.close
-                        : Icons.mic,
+                        : isRecording
+                            ? Icons.close
+                            : Icons.mic,
                     color: Colors.white,
                   ),
-                  onTap: sendTextMessage,
+                  onTap: sendTextMessageOrAudioRecord,
                 ),
               ),
             ),
