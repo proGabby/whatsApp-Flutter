@@ -6,7 +6,11 @@ class CircularLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
-    );
+        body: Center(
+      child: SizedBox(
+          height: 60,
+          width: 50,
+          child: Center(child: CircularProgressIndicator())),
+    ));
   }
 }

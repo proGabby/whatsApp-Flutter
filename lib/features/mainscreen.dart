@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:whatsapp_clone/features/select_contact/screen/selectcontact-screen.dart';
 
 import '../resources/common/colors.dart';
+import 'auth/controller/auth-controller.dart';
 import 'chats/widgets/contact-list.dart';
 
 class MobileScreen extends ConsumerStatefulWidget {
@@ -16,22 +17,41 @@ class MobileScreen extends ConsumerStatefulWidget {
 }
 
 class _MobileScreenState extends ConsumerState<MobileScreen>
-    with TickerProviderStateMixin
-// //WidgetsBindingObserver
-{
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late TabController tabBarController;
 
   @override
   void initState() {
     tabBarController = TabController(length: 2, vsync: this);
-    // WidgetsBinding.instance.addObserver(this);
+    //adding an observer for widgebing
+    WidgetsBinding.instance.addObserver(this);
     super.initState();
+  }
+
+  //Called when the system puts the app in the background or returns the app to the foreground.
+  //appLifecycleState use to check whether user is offline or online
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    //switch depanding on the state
+    switch (state) {
+      case AppLifecycleState.resumed:
+        //set online status to true
+        ref.read(authControllerProvider).setUserState(true);
+        break;
+      case AppLifecycleState.inactive:
+      case AppLifecycleState.detached:
+      case AppLifecycleState.paused:
+        //set online status to false
+        ref.read(authControllerProvider).setUserState(false);
+        break;
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    // WidgetsBinding.instance.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override

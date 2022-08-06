@@ -132,12 +132,19 @@ class AuthUtil {
     return user;
   }
 
-//get user data from firestore as a stream snapshot
+  //get user data from firestore as a stream snapshot
   Stream<UserModel> userData(String userId) {
     return firestore.collection('users').doc(userId).snapshots().map(
           (event) => UserModel.fromMap(
             event.data()!,
           ),
         );
+  }
+
+  //set user online status
+  void setUserState(bool isOnline) async {
+    await firestore.collection('users').doc(auth.currentUser!.uid).update({
+      'isOnline': isOnline,
+    });
   }
 }
