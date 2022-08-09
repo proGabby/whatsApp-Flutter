@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,9 @@ import 'package:whatsapp_clone/features/auth/screen/otp-screen.dart';
 import 'package:whatsapp_clone/features/auth/screen/user-information_screen.dart';
 import 'package:whatsapp_clone/features/chats/screen/chat-screen_mobile.dart';
 import 'package:whatsapp_clone/features/mainscreen.dart';
+import 'package:whatsapp_clone/features/status/screen/confirm_status_screen.dart';
+import 'package:whatsapp_clone/features/status/screen/status-screen.dart';
+import 'package:whatsapp_clone/models/status_model.dart';
 import 'package:whatsapp_clone/resources/common/circularLoader.dart';
 import 'package:whatsapp_clone/resources/common/colors.dart';
 import 'package:whatsapp_clone/resources/common/errro.dart';
@@ -53,6 +58,17 @@ class MyApp extends StatelessWidget {
           path: '/',
           builder: (context, state) {
             return const HomeScreen();
+          }),
+      GoRoute(
+          path: ConfirmStatusScreen.routeName,
+          builder: (context, state) {
+            final file = state.extra! as File;
+            return ConfirmStatusScreen(myFile: file);
+          }),
+      GoRoute(
+          path: StatusScreen.routeName,
+          builder: (context, state) {
+            return StatusScreen(status: state.extra! as Status);
           }),
       GoRoute(
           path: SelectContactsScreen.routeName,

@@ -1,12 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:whatsapp_clone/features/select_contact/screen/selectcontact-screen.dart';
+import 'package:whatsapp_clone/features/status/screen/confirm_status_screen.dart';
 
 import '../resources/common/colors.dart';
+import '../resources/common/utils.dart';
 import 'auth/controller/auth-controller.dart';
 import 'chats/widgets/contact-list.dart';
+import 'status/screen/status-contact-screen.dart';
 
 class MobileScreen extends ConsumerStatefulWidget {
   static const routeName = '/mobilescreen';
@@ -103,9 +108,9 @@ class _MobileScreenState extends ConsumerState<MobileScreen>
               Tab(
                 text: 'CHATS',
               ),
-              // Tab(
-              //   text: 'STATUS',
-              // ),
+              Tab(
+                text: 'STATUS',
+              ),
               Tab(
                 text: 'CALLS',
               ),
@@ -113,21 +118,24 @@ class _MobileScreenState extends ConsumerState<MobileScreen>
           ),
         ),
         body: TabBarView(
+          //tabview to enable top navigation tabbar
           controller: tabBarController,
           children: const [
             ContactsList(),
-            // StatusContactsScreen(),
-            Text('Calls')
+            StatusContactsScreen(),
           ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            context.push(SelectContactsScreen.routeName);
-            // if (tabBarController.index == 0) {
-            //   context.go(SelectContactsScreen.routeName);
-            // } else {          //   File? pickedImage = await pickImageFromGallery(context);
-            //   if (pickedImage != null) {}
-            // }
+            if (tabBarController.index == 0) {
+              context.push(SelectContactsScreen.routeName);
+            } else {
+              File? pickedImage = await pickImageFromGallery(context);
+              if (pickedImage != null) {
+                context.pushNamed(ConfirmStatusScreen.routeName,
+                    extra: pickedImage);
+              }
+            }
           },
           backgroundColor: tabColor,
           child: const Icon(
