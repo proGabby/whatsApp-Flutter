@@ -10,23 +10,30 @@ import '../widgets/chat-list.dart';
 
 class MobileChatScreen extends ConsumerWidget {
   static const routeName = '/mobile-chat-screen';
-  const MobileChatScreen({
+  MobileChatScreen({
     Key? key,
     required this.name,
     required this.userId,
-    // required this.isGroupChat,
-    // required this.profilePic
   }) : super(key: key);
   final String name;
   final String userId;
-  final bool isGroupChat = false;
-  final String profilePic = "";
+  bool isGroupChat = false;
+  String profilePic = '';
+
+  MobileChatScreen.groupScreen(
+      {Key? key,
+      required this.name,
+      required this.userId,
+      required this.isGroupChat,
+      required this.profilePic})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: appBarColor,
+        //enabling online and offline title for chatting screen
         title: isGroupChat
             ? Text(name)
             : StreamBuilder<UserModel>(
@@ -38,13 +45,14 @@ class MobileChatScreen extends ConsumerWidget {
                   return Column(
                     children: [
                       Text(name),
-                      Text(
-                        snapshot.data!.isOnline ? 'online' : 'offline',
-                        style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.normal,
+                      if (!isGroupChat)
+                        Text(
+                          snapshot.data!.isOnline ? 'online' : 'offline',
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
-                      ),
                     ],
                   );
                 }),

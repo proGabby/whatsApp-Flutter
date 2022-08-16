@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:whatsapp_clone/features/group/screen/create-group_screen.dart';
+import 'package:whatsapp_clone/features/group/widget/group-list.dart';
 
 import 'package:whatsapp_clone/features/select_contact/screen/selectcontact-screen.dart';
 import 'package:whatsapp_clone/features/status/screen/confirm_status_screen.dart';
@@ -27,7 +29,7 @@ class _MobileScreenState extends ConsumerState<MobileScreen>
 
   @override
   void initState() {
-    tabBarController = TabController(length: 2, vsync: this);
+    tabBarController = TabController(length: 3, vsync: this);
     //adding an observer for widgebing
     WidgetsBinding.instance.addObserver(this);
     super.initState();
@@ -91,7 +93,8 @@ class _MobileScreenState extends ConsumerState<MobileScreen>
                     child: const Text(
                       'Create Group',
                     ),
-                    onTap: () {})
+                    onTap: () =>
+                        Future(() => context.push(CreateGroupScreen.routeName)))
               ],
             ),
           ],
@@ -109,10 +112,10 @@ class _MobileScreenState extends ConsumerState<MobileScreen>
                 text: 'CHATS',
               ),
               Tab(
-                text: 'STATUS',
+                text: 'GROUPS',
               ),
               Tab(
-                text: 'CALLS',
+                text: 'STATUS',
               ),
             ],
           ),
@@ -122,6 +125,7 @@ class _MobileScreenState extends ConsumerState<MobileScreen>
           controller: tabBarController,
           children: const [
             ContactsList(),
+            GroupList(),
             StatusContactsScreen(),
           ],
         ),
@@ -132,14 +136,13 @@ class _MobileScreenState extends ConsumerState<MobileScreen>
             } else {
               File? pickedImage = await pickImageFromGallery(context);
               if (pickedImage != null) {
-                context.pushNamed(ConfirmStatusScreen.routeName,
-                    extra: pickedImage);
+                context.push(ConfirmStatusScreen.routeName, extra: pickedImage);
               }
             }
           },
           backgroundColor: tabColor,
-          child: const Icon(
-            Icons.comment,
+          child: Icon(
+            tabBarController.index == 3 ? Icons.add : Icons.comment,
             color: Colors.white,
           ),
         ),

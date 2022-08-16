@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:whatsapp_clone/features/chats/utils/chat_utils.dart';
+import 'package:whatsapp_clone/models/group-model.dart';
 
 import '../../../models/chat-contact-model.dart';
 import '../../../models/msg-model.dart';
@@ -28,17 +29,17 @@ class ChatController {
     return chatUtility.getChatContacts();
   }
 
-  // Stream<List<Group>> chatGroups() {
-  //   return chatRepository.getChatGroups();
-  // }
+  Stream<List<GroupModel>> chatGroups() {
+    return chatUtility.getChatGroups();
+  }
 
   Stream<List<Message>> chatStream(String recieverUserId) {
     return chatUtility.getChatStream(recieverUserId);
   }
 
-  // Stream<List<Message>> groupChatStream(String groupId) {
-  //   return chatRepository.getGroupChatStream(groupId);
-  // }
+  Stream<List<Message>> groupChatStream(String groupId) {
+    return chatUtility.getGroupChatStream(groupId);
+  }
 
   void sendTextMessage(
     BuildContext context,

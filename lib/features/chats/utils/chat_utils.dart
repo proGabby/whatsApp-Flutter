@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
+import 'package:whatsapp_clone/models/group-model.dart';
 
 import 'package:whatsapp_clone/resources/common/enums/msg-enum.dart';
 import 'package:whatsapp_clone/models/chat-contact-model.dart';
@@ -408,5 +410,34 @@ class ChatUtility {
     } catch (e) {
       showSnackBar(context: context, content: e.toString());
     }
+  }
+
+  Stream<List<GroupModel>> getChatGroups() {
+    return firestore.collection('groups').snapshots().map((event) {
+      List<GroupModel> groups = [];
+      for (var document in event.docs) {
+        var group = GroupModel.fromMap(document.data());
+        if (group.membersUid.contains(auth.currentUser!.uid)) {
+          groups.add(group);
+        }
+      }
+      return groups;
+    });
+  }
+
+  Stream<List<Message>> getGroupChatStream(String groudId) {
+    return firestore
+        .collection('groups')
+        .doc(groudId)
+        .collection('chats')
+        .orderBy('timeSent')
+        .snapshots()
+        .map((event) {
+      List<Message> messages = [];
+      for (var document in event.docs) {
+        messages.add(Message.fromMap(document.data()));
+      }
+      return messages;
+    });
   }
 }

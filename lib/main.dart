@@ -10,6 +10,7 @@ import 'package:whatsapp_clone/features/auth/screen/login-screen.dart';
 import 'package:whatsapp_clone/features/auth/screen/otp-screen.dart';
 import 'package:whatsapp_clone/features/auth/screen/user-information_screen.dart';
 import 'package:whatsapp_clone/features/chats/screen/chat-screen_mobile.dart';
+import 'package:whatsapp_clone/features/group/screen/create-group_screen.dart';
 import 'package:whatsapp_clone/features/mainscreen.dart';
 import 'package:whatsapp_clone/features/status/screen/confirm_status_screen.dart';
 import 'package:whatsapp_clone/features/status/screen/status-screen.dart';
@@ -76,6 +77,11 @@ class MyApp extends StatelessWidget {
             return const SelectContactsScreen();
           }),
       GoRoute(
+          path: CreateGroupScreen.routeName,
+          builder: (context, state) {
+            return const CreateGroupScreen();
+          }),
+      GoRoute(
           path: LoginScreen.routeName,
           builder: (context, state) {
             return const LoginScreen();
@@ -99,6 +105,17 @@ class MyApp extends StatelessWidget {
             return MobileChatScreen(
                 name: stateMap['name'], userId: stateMap['uid']);
           }),
+      GoRoute(
+          path: MobileChatScreen.routeName,
+          builder: (context, state) {
+            final stateMap = state.extra! as Map<String, dynamic>;
+            return MobileChatScreen.groupScreen(
+              name: stateMap['name'],
+              userId: stateMap['uid'],
+              profilePic: stateMap['profilePic'],
+              isGroupChat: stateMap['isGroupChat'],
+            );
+          })
     ],
     errorBuilder: (context, state) {
       return const ErrorScrren(error: "404 Error");
